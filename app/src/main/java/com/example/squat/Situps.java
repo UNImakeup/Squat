@@ -10,23 +10,22 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class Situps extends AppCompatActivity implements SensorEventListener{ //kan gøre sådan her i stedet. Så bare sætte metoderne ind.
     private SensorManager sensorManager;
     private Sensor acceleroMeter;
     private SensorEventListener acceleroSensorListener;
-    TextView textview;
+    TextView repText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_situps);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         acceleroMeter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(MainActivity.this, acceleroMeter,  sensorManager.SENSOR_DELAY_NORMAL);
-        textview = (TextView) findViewById(R.id.textView2);
-
+        sensorManager.registerListener(Situps.this, acceleroMeter,  sensorManager.SENSOR_DELAY_NORMAL);
+        TextView repText = (TextView) findViewById(R.id.textView3);
 
     }
 
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     int reps = 0;
-    boolean squat;
+    boolean situp;
     double currentValue;
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -47,29 +46,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //System.out.println(i);
 
         //for(int i = 0; reps < 10; i++){
-            if(/*sensorEvent.values[1] > 0 lastValue < 0.0 && */currentValue < 0.0) {
-                squat = true;
-                //int a = 1;
-            }
-            if(squat==true && currentValue > 8.0){ //Ny værdi, så den først tæller når man kommer op.
-                //reps++;
-                squat=false;
-                reps++;
+        if(/*sensorEvent.values[1] > 0 lastValue < 0.0 && */currentValue < 0.0) {
+            situp = true;
+            //int a = 1;
+        }
+        if(situp==true && currentValue > 0.0){
+            //reps++;
+            situp=false;
+            reps++;
 
-                if(reps == 2){
-                    Intent nextExercise = new Intent(MainActivity.this, Situps.class);
-                    startActivity(nextExercise);
-                }
-
-            }
-
-            textview.setText(sensorEvent.values[1] + " " + reps);
-            double lastValue = currentValue;
         }
 
-        //System.out.println(sensorEvent.values[1]);
-
-    //}
+        repText.setText("reps: " + reps);
+        //repText.setText(sensorEvent.values[1] + " " + reps);
+    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
